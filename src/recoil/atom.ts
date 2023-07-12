@@ -21,11 +21,13 @@ export const todoListState = atom<ITodoList[]>({
 export const categoryListState = atom<string[]>({
   key: "CategoryList",
   default: ["todo", "doing", "done"],
+  effects_UNSTABLE: [persistAtom],
 });
 
 export const selectedCategoryState = atom({
   key: "selectedCategory",
   default: "todo",
+  effects_UNSTABLE: [persistAtom],
 });
 
 export const todoSelector = selector({
