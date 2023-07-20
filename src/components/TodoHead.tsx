@@ -1,20 +1,12 @@
 import styled from "styled-components";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import {
-  categoryListState,
-  selectedCategoryState,
-  todoListState,
-} from "../recoil/atom";
 import CustomSelect from "./CustomSelect";
-import { useState } from "react";
-import { v4 } from "uuid";
 
 const Wrapper = styled.div`
   width: 100%;
   height: 150px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
 `;
@@ -28,67 +20,7 @@ const TitleContainer = styled.div`
   color: white;
 `;
 
-const Container = styled.div`
-  margin: 0 auto;
-  width: 70%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 30px;
-`;
-
-const InputContanier = styled.div`
-  position: relative;
-  width: 400px;
-  height: 50px;
-`;
-
-const Input = styled.input`
-  border: 1px solid red;
-  margin: 0px;
-  padding: 0px;
-  width: 97%;
-  /* outline: none; */
-  height: 100%;
-  border-radius: 15px;
-  border: none;
-  padding-left: 0.9rem;
-`;
-
-const Button = styled.button`
-  position: absolute;
-  top: 0;
-  right: 0px;
-  z-index: 2;
-  border: none;
-  outline: none;
-  font-size: 18px;
-  width: 60px;
-  height: 100%;
-  cursor: pointer;
-  color: black;
-  background-color: inherit;
-  transform: translateX(2px);
-  border-radius: 15px;
-`;
-
 const TodoHead = () => {
-  const categories = useRecoilValue(categoryListState);
-  const setTodoState = useSetRecoilState(todoListState);
-  const selectedCategory = useRecoilValue(selectedCategoryState);
-  const [inputTodo, setInputTodo] = useState("");
-
-  function handleClick() {
-    if (inputTodo.length < 1) return;
-
-    let uniqueID = v4();
-    setTodoState((oldTodo) => [
-      ...oldTodo,
-      { id: uniqueID, text: inputTodo, category: selectedCategory },
-    ]);
-    setInputTodo("");
-  }
-
   return (
     <Wrapper>
       <TitleContainer>
@@ -105,31 +37,7 @@ const TodoHead = () => {
         </span>
         <h1>TO DOs</h1>
       </TitleContainer>
-      <Container>
-        <div style={{ marginLeft: "10px" }}>
-          <CustomSelect categoryOptions={categories} />
-        </div>
-        <InputContanier>
-          <Input
-            type="text"
-            value={inputTodo}
-            onChange={(e: React.FormEvent<HTMLInputElement>) =>
-              setInputTodo(e.currentTarget.value)
-            }
-          />
-          <Button onClick={handleClick}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              style={{ width: " 40px", height: "40px", color: "green" }}
-            >
-              <path d="M12 6v12m6-6H6" />
-            </svg>
-          </Button>
-        </InputContanier>
-      </Container>
+      <CustomSelect />
     </Wrapper>
   );
 };

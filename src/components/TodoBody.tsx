@@ -1,6 +1,12 @@
 import { styled } from "styled-components";
-import { categoryListState, todoListState } from "../recoil/atom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import {
+  categoryListState,
+  todoListState,
+  selectedCategoryState,
+} from "../recoil/atom";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useState } from "react";
+import { v4 } from "uuid";
 
 const Wrapper = styled.div`
   display: flex;
@@ -44,12 +50,49 @@ const RemoveButton = styled(CustomButton)`
   color: #f3eded;
 `;
 
+const Input = styled.input`
+  margin-bottom: 20px;
+  padding: 0px;
+  width: 445px;
+  height: 60px;
+  border-radius: 15px;
+  border: none;
+  padding: 5px;
+`;
+
 const TodoBody = () => {
   const categoryList = useRecoilValue(categoryListState);
+  const selectedCategory = useRecoilValue(selectedCategoryState);
   const [todoList, setTodoList] = useRecoilState(todoListState);
+  const [inputTodo, setInputTodo] = useState("");
+  const setTodoState = useSetRecoilState(todoListState);
+
+  function handleClick(e: React.KeyboardEvent<HTMLElement>) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (inputTodo.length < 1) return;
+
+      let uniqueID = v4();
+      setTodoState((oldTodo) => [
+        ...oldTodo,
+        { id: uniqueID, text: inputTodo, category: selectedCategory },
+      ]);
+      setInputTodo("");
+    } else return;
+  }
 
   return (
     <Wrapper>
+      <Input
+        type="text"
+        value={inputTodo}
+        onChange={(e: React.FormEvent<HTMLInputElement>) =>
+          setInputTodo(e.currentTarget.value)
+        }
+        onKeyDown={(e: React.KeyboardEvent<HTMLElement>) => handleClick(e)}
+        placeholder="Add To Do..."
+      />
+
       {todoList.map((todo) => (
         <>
           <TodoItemContainer key={todo.id}>

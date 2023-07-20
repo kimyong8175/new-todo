@@ -27,7 +27,6 @@ export const categoryListState = atom<string[]>({
 export const selectedCategoryState = atom({
   key: "selectedCategory",
   default: "todo",
-  effects_UNSTABLE: [persistAtom],
 });
 
 export const todoSelector = selector({
