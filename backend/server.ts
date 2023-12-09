@@ -8,16 +8,21 @@ const port = process.env.PORT || 8080;
 const app: Express = express();
 
 import userRouter from "./routes/userRoutes";
+import { notFound, errorHandler } from "./middlewares/errorMiddleware";
 
-app.use(bodyParser.urlencoded({ extended: true }));
-
-app.use("/api/users", userRouter);
+connectDB();
 
 app.get("/", function (req: Request, res: Response) {
   res.send("Hello World");
 });
 
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use("/api/users", userRouter);
+
+app.use(notFound);
+app.use(errorHandler);
+
 app.listen(port, () => {
-  connectDB();
-  console.log(`http://localhost:${port}`);
+  console.log(`server: http://localhost:${port}`);
 });
