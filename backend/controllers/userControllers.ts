@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import asyncHandler from "../middlewares/asyncHandler";
 import User from "../models/User";
-import { identifierToKeywordKind } from "typescript";
 
 // @desc    Get users
 // @route   GET /api/users
@@ -14,8 +13,8 @@ const getUsers = asyncHandler(async (req: Request, res: Response) => {
       users,
     });
   } else {
-    res.status(400);
-    throw new Error("No users");
+    res.status(404);
+    throw new Error("User not found");
   }
 });
 
@@ -23,16 +22,30 @@ const getUsers = asyncHandler(async (req: Request, res: Response) => {
 // @route   GET /api/users/:id
 // @access  public
 const getUserById = asyncHandler(async (req: Request, res: Response) => {
-  const { id } = req.body;
-  const user = await User.findById(id);
+  const user = await User.findById(req.params.id);
 
   if (user) {
     res.status(200).json({
       user,
     });
   } else {
-    res.status(400);
-    throw new Error("No user");
+    res.status(404);
+    throw new Error("User not found");
+  }
+});
+
+// @desc    Delete user
+// @route   DELETE /api/users/:id
+// @access  public
+const deleteUser = asyncHandler(async (req: Request, res: Response) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    await User.deleteOne({ _id: user._id });
+    res.status(200).json({ message: "User deleted successfully" });
+  } else {
+    res.status(404);
+    throw new Error("User not found");
   }
 });
 
@@ -53,6 +66,11 @@ const authUser = asyncHandler(async (req: Request, res: Response) => {
     throw new Error("Invalid email or password");
   }
 });
+
+// @desc    Logout user
+// @route   POST /api/users/logout
+// @access  Private
+const logoutUser = asyncHandler(async (req: Request, res: Response) => {});
 
 // @desc    Register user
 // @route   POST /api/users/register
@@ -85,4 +103,4 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
-export { authUser, registerUser, getUsers, getUserById };
+export { authUser, registerUser, getUsers, getUserById, deleteUser };

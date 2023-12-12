@@ -6,10 +6,11 @@ import {
   getUserById,
   authUser,
   registerUser,
+  deleteUser,
 } from "../controllers/userControllers";
 
-router.get("/:id", getUserById);
-router.route("/").get(getUsers).post(registerUser).put().delete();
+router.route("/:id").get(getUserById).delete(deleteUser);
+router.route("/").get(getUsers).post(registerUser);
 router.post("/login", authUser);
 
 export default router;
